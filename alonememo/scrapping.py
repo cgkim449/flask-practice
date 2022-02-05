@@ -1,15 +1,21 @@
 import requests
 from bs4 import BeautifulSoup
 
+url = 'https://platum.kr/archives/120958'
+
 headers = {'User-Agent' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'}
-data = requests.get('https://movie.naver.com/movie/sdb/rank/rmovie.nhn?sel=pnt&date=20200303', headers=headers)
+data = requests.get(url,headers=headers)
 
-soup=BeautifulSoup(data.text, 'html.parser')
+soup = BeautifulSoup(data.text, 'html.parser')
 
-title=soup.select_one('meta[property="og:title"]')['content']
-image=soup.select_one('meta[property="og:image"]')['content']
-description=soup.select_one('meta[property="og:description"]')['content']
+og_image = soup.select_one('meta[property="og:image"]')
+og_title = soup.select_one('meta[property="og:title"]')
+og_description = soup.select_one('meta[property="og:description"]')
 
-print(title,image,description)
+url_image = og_image['content']
+url_title = og_title['content']
+url_description = og_description['content']
 
-# - soup.select('태그명[속성="값"]')
+print(url_image)
+print(url_title)
+print(url_description)

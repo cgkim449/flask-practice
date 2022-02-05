@@ -3,14 +3,17 @@ from bs4 import BeautifulSoup
 
 from pymongo import MongoClient
 
+from datetime import datetime
+import random
+
 client = MongoClient('localhost', 27017)
-db = client.dbjungle
+boards_col = client.dbsparta.boards
 
 # DB에 저장할 영화인들의 출처 url을 가져옵니다.
 def get_urls():
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'}
-    data = requests.get('https://movie.naver.com/movie/sdb/rank/rpeople.nhn', headers=headers)
+    data = requests.get('https://movie.naver.com/movie/sdb/rank/rpeople.naver?date=20191010', headers=headers)
 
     soup = BeautifulSoup(data.text, 'html.parser')
 
@@ -35,29 +38,33 @@ def insert_star(url):
     soup = BeautifulSoup(data.text, 'html.parser')
 
     name = soup.select_one('#content > div.article > div.mv_info_area > div.mv_info.character > h3 > a').text
-    img_url = soup.select_one('#content > div.article > div.mv_info_area > div.poster > img')['src']
-    recent_work = soup.select_one(
+    title = soup.select_one(
         '#content > div.article > div.mv_info_area > div.mv_info.character > dl > dd > a:nth-child(1)').text
     # dd 조심
     # 바로 밑 dd가 생년월일인데 dd > a:nth-child(1) 로하면 생년월일 밑에 a가 없으니까 그 다음 dd를 찾는듯
-
+    content = soup.select_one('#content > div.article > div.section_group.section_group_frst > div:nth-child(1) > div > div.pf_intro > div').text
+    current_utc_time = round(datetime.utcnow().timestamp() * 1000)
     doc = {
         'name': name,
-        'img_url': img_url,
-        'recent': recent_work,
-        'url': url,
-        'like': 0
+        'title': title,
+        'content': content,
+        'regdate': current_utc_time,
+        'updatedate': current_utc_time,
+        "view": random.randrange(30, 777)
     }
 
-    db.mystar.insert_one(doc)
+    boards_col.insert_one(doc)
     print('완료!', name)
 
 # 기존 mystar 콜렉션을 삭제하고, 출처 url들을 가져온 후, 크롤링하여 DB에 저장합니다.
 def insert_all():
-    db.mystar.drop()  # mystar 콜렉션을 모두 지워줍니다.
+    # boards_col.drop()  # mystar 콜렉션을 모두 지워줍니다.
     urls = get_urls()
     for url in urls:
-        insert_star(url)
+        try:
+            insert_star(url)
+        except:
+            pass
 
 ### 실행하기
 insert_all()

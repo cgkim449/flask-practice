@@ -1,0 +1,13 @@
+<!-- JavaScript Ajax 예제 -->
+
+<script>
+var xhr = new XMLHttpRequest();
+xhr.open("get", "/test");
+xhr.onreadystatechange = function() {
+    if(xhr.status == 200) {
+        console.log(xhr.responseText);
+    } else {
+        console.log("Error: " + xhr.status)
+    }
+}
+</script>
