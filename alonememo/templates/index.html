@@ -13,8 +13,8 @@
     <!-- JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <!-- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-        crossorigin="anonymous"></script> -->
+                  integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+                  crossorigin="anonymous"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
         integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
         crossorigin="anonymous"></script>
@@ -22,7 +22,7 @@
     <!-- 구글폰트 -->
     <link href="https://fonts.googleapis.com/css?family=Stylish&display=swap" rel="stylesheet">
 
-    <title>나홀로 메모장</title>
+    <title>alonememo</title>
 
     <!-- style -->
     <style type="text/css">
@@ -96,14 +96,10 @@
                 url: "/memo",
                 data: {},
                 success: function (response) {
-                    if (response["result"] == "success") {
-                        let articles = response["articles"];
-                        console.log(articles);
-                        for (let i = 0; i < articles.length; i++) {
-                            makeCard(articles[i]["image"], articles[i]["url"], articles[i]["title"], articles[i]["desc"], articles[i]["comment"]);
-                        }
-                    } else {
-                        alert("서버 오류!")
+                    let articles = response["articles"];
+                    console.log(articles);
+                    for (let i = 0; i < articles.length; i++) {
+                        makeCard(articles[i]["image"], articles[i]["url"], articles[i]["title"], articles[i]["desc"], articles[i]["comment"]);
                     }
                 }
             })
